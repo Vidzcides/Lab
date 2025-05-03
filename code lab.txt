@@ -1,0 +1,79 @@
+import React, { useState } from 'react';
+
+const RegistrationForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [dob, setDob] = useState('');
+  const [errors, setErrors] = useState({});
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formErrors = {};
+
+    if (!name) formErrors.name = 'Name is required';
+    if (!email) formErrors.email = 'Email is required';
+    if (!password) formErrors.password = 'Password is required';
+    if (password !== confirmPassword) formErrors.confirmPassword = 'Passwords must match';
+    if (!dob) formErrors.dob = 'Date of Birth is required';
+
+    const age = new Date().getFullYear() - new Date(dob).getFullYear();
+    if (age < 18) formErrors.dob = 'You must be at least 18 years old';
+
+    if (Object.keys(formErrors).length === 0) {
+      setIsRegistered(true);
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setDob('');
+    } else {
+      setErrors(formErrors);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Registration Form</h2>
+      {isRegistered && <p style={{ color: 'green' }}>Registered successfully!</p>}
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name:</label>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
+        </div>
+
+        <div>
+          <label>Email:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+        </div>
+
+        <div>
+          <label>Password:</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+        </div>
+
+        <div>
+          <label>Confirm Password:</label>
+          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          {errors.confirmPassword && <p style={{ color: 'red' }}>{errors.confirmPassword}</p>}
+        </div>
+
+        <div>
+          <label>Date of Birth:</label>
+          <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
+          {errors.dob && <p style={{ color: 'red' }}>{errors.dob}</p>}
+        </div>
+
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  );
+};
+
+export default RegistrationForm;
